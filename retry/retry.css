@@ -1,0 +1,153 @@
+body {
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: "Kosugi Maru", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    background-image: url("/retry/img/bg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.switch{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-family: "Kosugi Maru", sans-serif;
+    font-weight: 400;
+    text-align: center;
+    height: auto;
+    max-height: 90vh;
+}
+
+.switch > button{
+    font-size: 2vw;
+    width: 20vw;
+    height: 5vh;
+    margin: 1vh;
+    border: 0;
+    border-radius: 100px;
+    background-color: #61a4fb;
+    color: #ddd3cb;
+    cursor: pointer;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-family: "Kosugi Maru", sans-serif;
+    font-weight: 400;
+    text-align: center;
+    height: auto;
+    flex-direction: column;
+    color: #ddd3cb;
+}
+
+.container > div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 90vw;
+    flex-direction: row;
+}
+
+.num{
+    font-size: 2vw;
+    width: 10%;
+}
+
+.ja{
+    font-size: 2vw;
+    width: 60%;
+    padding-top: 1.5vh;
+    transition: 0.5s;
+}
+
+.en{
+    font-size: 4vw;
+    width: 30%;
+    transition: 0.5s;
+}
+
+.checkbox-wrapper-53 input[type="checkbox"] {
+    visibility: hidden;
+    display: none;
+}
+
+.checkbox-wrapper-53 .container {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    font-size: 20px;
+    user-select: none;
+}
+
+.checkbox-wrapper-53 .checkmark {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 1.3em;
+    width: 1.3em;
+    background-color: #ccc;
+    border-radius: 100%;
+    background: #e8e8e8;
+    box-shadow: 3px 3px 5px #99bcc3,
+    -3px -3px 5px #99bcc3;
+}
+
+.checkbox-wrapper-53 .container input:checked ~ .checkmark {
+    box-shadow: inset 3px 3px 5px #99bcc3,
+    inset -3px -3px 5px #99bcc3;
+}
+
+.checkbox-wrapper-53 .checkmark:after {
+    content: "";
+    position: absolute;
+    opacity: 0;
+}
+
+.checkbox-wrapper-53 .container input:checked ~ .checkmark:after {
+    opacity: 1;
+}
+
+.checkbox-wrapper-53 .container .checkmark:after {
+    left: 0.45em;
+    top: 0.25em;
+    width: 0.25em;
+    height: 0.5em;
+    border: solid darkgray;
+    border-width: 0 0.15em 0.15em 0;
+    transform: rotate(45deg);
+    transition: all 250ms;
+}
+
+.pe{
+    color: #99bcc3;
+    font-family: "Vibur", cursive;
+    font-weight: 400;
+    font-style: normal;
+    margin-left: 0;
+    margin-right: 2vw;
+
+}
+
+.pj{
+    color: #99bcc3;
+    font-family: "Vibur", cursive;
+    font-weight: 400;
+    font-style: normal;
+    margin-left: 2vw;
+    margin-right: 2vw;
+}

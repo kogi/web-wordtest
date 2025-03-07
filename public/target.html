@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Target1900</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Doto:wght,ROND@600,0..100&family=Gaegu&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Doto:wght,ROND@600,0..100&family=Gaegu&family=Patrick+Hand+SC&family=Quicksand:wght@300..700&family=Vibur&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id='home'>
+    <div class='home'>
+      <div class="title">
+        <p class="title-1">Target</p>
+        <p class="title-2">1900</p>
+      </div>
+      <div class="wordCardsContainer">
+        <div class="wordCard1">
+          <p class="sWord" id='word1'>START</p>
+        </div>
+        <img class='arrow' src="/img/arrow-right.png" alt="arrow"/>
+        <div class="wordCard2">
+          <p class="sWord" id='word2' >END</p>
+        </div>
+      </div>
+  
+      <div class="switchDiv">
+        <p class='switchType'>ナンバ</p>
+        <label class="switch">
+          <input id='typeInput' type="checkbox" />
+          <span class="slider round"></span>
+        </label>
+        <p class='switchType'>ページ</p>
+      </div>
+      <div class="subtitle">
+        <input id='SWNInput' type="number" class="wnInput" min="1" max="1900" maxLength="4" />
+        <p>TO</p>
+        <input id='EWNInput' type="number" class="wnInput" min="1" max="1900" maxLength="4" />
+      </div>
+      <div class='start'>
+        <button id='startButton' class="button-33">Start</button>
+      </div>
+    </div>
+  </div>
+
+  <div id='testPage' style="display: none">
+    <div class="test-page">
+      <div>
+        <p class='wordTest' id="testWord"></p>
+      </div>
+
+      <input class='ansInput' type="text"  disabled="disabled" id="ansInput" />
+      <p class='correct' id="correct"></p>
+      <p class='wrong' id="wrong"></p>
+    </div>
+  </div>
+
+  <div id="resultPage" style="display: none;" class="result">
+<!--      <p class='result'>SCORE</p>-->
+      <p class='score' id="score"></p>
+      <p class='time' id="time"></p>
+      <div class="perfectDiv">
+        <img class='perfectImg' id="perfectImg" src="/img/star.png" alt="result" />
+      </div>
+      <button id='retryButton' class="button-33">復習する</button>
+  </div>
+
+  <div id="perfectResult" style="display: none;">
+  </div>
+
+  <script src="target.js"></script>
+  <script src="img.js"></script>
+  <script src="animation.js"></script>
+</body>
+</html>
