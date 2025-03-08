@@ -1,22 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="new/new.css" />
-    <title>WordTest</title>
-  </head>
-  <body>
-    <div class="range-input">
-      <h1>Word Test</h1>
-      <p class="book">Book:</p>
-      <div class="range">
-        <input type="text" id="sinput" class="input" />
-        <p>TO</p>
-        <input type="text" id="einput" class="input" />
-      </div>
-      <button id="start" class="button">Start</button>
-    </div>
-    <div class="word-card"></div>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="new/new.css" />
+		<title>WordTest</title>
+	</head>
+	<body>
+		<div class="range-input">
+			<h1>Word Test</h1>
+			<p class="book">BOOK</p>
+			<div class="book-select" id="bookSelect">
+				<img src="/new/img/target1900.jpg" alt="target1900" id="target1900Img" class="book-image01" />
+				<img src="/new/img/corpus4500.jpg" alt="corpus4500" id="corpus4500Img" class="book-image02" />
+			</div>
+			<div class="range">
+				<div class="input-block">
+					<input type="number" id="sinput" class="input" placeholder="No." />
+				</div>
+				<p>TO</p>
+				<div class="input-block">
+					<input type="number" id="einput" class="input" placeholder="No." />
+				</div>
+			</div>
+			<div class="start-button-content">
+				<button id="start" class="start-button">START</button>
+			</div>
+		</div>
+		<div class="word-card">
+			<div class="top-card-block" id="topCardBlock">
+				<div class="card" data-blur="true"></div>
+				<div class="card" data-blur="true"></div>
+				<div class="card" data-blur="false"></div>
+				<div class="card" data-blur="true"></div>
+				<div class="card" data-blur="true"></div>
+			</div>
+			<div class="middle-info-block"></div>
+			<div class="bottom-card-block" id="bottomCardBlock">
+				<div class="card" data-blur="true"></div>
+				<div class="card" data-blur="true"></div>
+				<div class="card" data-blur="false"></div>
+				<div class="card" data-blur="true"></div>
+				<div class="card" data-blur="true"></div>
+			</div>
+		</div>
+
+		<span id="hoge"></span>
+
+		<script src="new/new.js"></script>
+		<script src="https://unpkg.com/css-vars-ponyfill@2"></script>
+	</body>
 </html>
