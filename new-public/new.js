@@ -6,8 +6,8 @@ let bookLength;
 let doingAnimationTop = false;
 let doingAnimationBottom = false;
 
-let topAnimationPending = ["", ""];
-let bottomAnimationPending = ["", ""];
+let topAnimationPending = null;
+let bottomAnimationPending = null;
 
 let currentWordIndex = [1, 2];
 
@@ -19,8 +19,8 @@ const sinput = document.getElementById("sinput");
 const einput = document.getElementById("einput");
 
 document.getElementById("bookSelect").addEventListener("click", function (e) {
-	book1 = document.getElementById("target1900Img");
-	book2 = document.getElementById("corpus4500Img");
+	const book1 = document.getElementById("target1900Img");
+	const book2 = document.getElementById("corpus4500Img");
 	if (e.target.tagName !== "IMG") return;
 	book = e.target.alt;
 	if (e.target.classList.contains("selected")) {
@@ -46,7 +46,8 @@ document.getElementById("bookSelect").addEventListener("click", function (e) {
 					wordData = data;
 					sinput.disabled = false;
 					einput.disabled = false;
-					changeCard();
+					initPutText("top");
+					initPutText("bottom");
 				})
 				.catch((error) => {
 					console.error(error);
@@ -69,7 +70,7 @@ function slideCardsMinus(position, wordIndex) {
 				return;
 			} else {
 				doingAnimationTop = true;
-				topAnimationPending = "";
+				topAnimationPending = [null, null];
 			}
 			cardBlock = topCardBlock;
 			break;
@@ -79,7 +80,7 @@ function slideCardsMinus(position, wordIndex) {
 				return;
 			} else {
 				doingAnimationBottom = true;
-				bottomAnimationPending = "";
+				bottomAnimationPending = [null, null];
 			}
 			cardBlock = bottomCardBlock;
 			break;
@@ -88,7 +89,13 @@ function slideCardsMinus(position, wordIndex) {
 			return;
 	}
 
-	// 上段のカード
+	if (wordIndex > bookLength) {
+		wordIndex = bookLength;
+	}
+	if (wordIndex < 1) {
+		wordIndex = 1;
+	}
+
 	const cards = Array.from(document.querySelectorAll(`.${position}-card-block .card`));
 
 	updateBlurStates(cards, "minus");
@@ -122,8 +129,8 @@ function slideCardsMinus(position, wordIndex) {
 		});
 
 		if (position === "top") {
-			if (topAnimationPending !== "") {
-				console.log(1)
+			if (topAnimationPending[0]) {
+				console.log(1);
 				switch (topAnimationPending[0]) {
 					case "plus":
 						doingAnimationTop = false;
@@ -136,12 +143,11 @@ function slideCardsMinus(position, wordIndex) {
 					default:
 						break;
 				}
-				topAnimationPending = "";
 			} else {
 				doingAnimationTop = false;
 			}
 		} else {
-			if (bottomAnimationPending !== "") {
+			if (bottomAnimationPending[0]) {
 				switch (bottomAnimationPending[0]) {
 					case "plus":
 						doingAnimationBottom = false;
@@ -154,7 +160,6 @@ function slideCardsMinus(position, wordIndex) {
 					default:
 						break;
 				}
-				bottomAnimationPending = "";
 			} else {
 				doingAnimationBottom = false;
 			}
@@ -166,25 +171,31 @@ function slideCardsMinus(position, wordIndex) {
 
 function slideCardsPlus(position, wordIndex) {
 	let cardBlock;
+	if (wordIndex > bookLength) {
+		wordIndex = bookLength;
+	}
+	if (wordIndex < 1) {
+		wordIndex = 1;
+	}
 	switch (position) {
 		case "top":
 			cardBlock = topCardBlock;
-			if (doingAnimationTop) {// 位置で判断するしたほうが安定する
-				topAnimationPending = "plus";
+			if (doingAnimationTop) {
+				topAnimationPending = ["plus", wordIndex];
 				return;
 			} else {
 				doingAnimationTop = true;
-				topAnimationPending = "";
+				topAnimationPending = [null, null];
 			}
 			break;
 		case "bottom":
 			cardBlock = bottomCardBlock;
 			if (doingAnimationBottom) {
-				bottomAnimationPending = "plus";
+				bottomAnimationPending = ["plus", wordIndex];
 				return;
 			} else {
 				doingAnimationBottom = true;
-				bottomAnimationPending = "minus";
+				bottomAnimationPending = [null, null];
 			}
 			break;
 		default:
@@ -192,7 +203,6 @@ function slideCardsPlus(position, wordIndex) {
 			return;
 	}
 
-	// 上段のカード
 	const cards = Array.from(document.querySelectorAll(`.${position}-card-block .card`));
 
 	updateBlurStates(cards, "plus");
@@ -223,7 +233,7 @@ function slideCardsPlus(position, wordIndex) {
 		});
 
 		if (position === "top") {
-			if (topAnimationPending !== "") {
+			if (topAnimationPending[0]) {
 				switch (topAnimationPending[0]) {
 					case "plus":
 						doingAnimationTop = false;
@@ -236,13 +246,12 @@ function slideCardsPlus(position, wordIndex) {
 					default:
 						break;
 				}
-				topAnimationPending = "";
+				topAnimationPending = [null, null];
 			} else {
-				console.log(3)
 				doingAnimationTop = false;
 			}
 		} else {
-			if (bottomAnimationPending !== "") {
+			if (bottomAnimationPending[0]) {
 				switch (bottomAnimationPending[0]) {
 					case "plus":
 						doingAnimationBottom = false;
@@ -255,13 +264,116 @@ function slideCardsPlus(position, wordIndex) {
 					default:
 						break;
 				}
-				bottomAnimationPending = "";
 			} else {
 				doingAnimationBottom = false;
 			}
 		}
 	}, slideTime); // アニメーションの時間と同じにする
 	// 同様に下段のカード処理も実装
+}
+
+//合併したほうがコードが簡潔
+function slideCards(position, direction, wordIndex) {
+	let cardBlock;
+	if (wordIndex > bookLength) {
+		wordIndex = bookLength;
+	}
+	if (wordIndex < 1) {
+		wordIndex = 1;
+	}
+	switch (position) {
+		case "top":
+			cardBlock = topCardBlock;
+			if (doingAnimationTop) {
+				topAnimationPending = [direction, wordIndex];
+				return;
+			} else {
+				doingAnimationTop = true;
+				topAnimationPending = [null, null];
+			}
+			break;
+		case "bottom":
+			cardBlock = bottomCardBlock;
+			if (doingAnimationBottom) {
+				bottomAnimationPending = [direction, wordIndex];
+				return;
+			} else {
+				doingAnimationBottom = true;
+				bottomAnimationPending = [null, null];
+			}
+			break;
+		default:
+			console.error("Invalid position");
+			return;
+	}
+
+	const cards = Array.from(document.querySelectorAll(`.${position}-card-block .card`));
+
+	updateBlurStates(cards, "plus");
+	changeCard(position, direction === "plus" ? 3 : 1, wordIndex);
+
+	// カードをアニメーションで移動（左へスライド）
+	cards.forEach((card) => {
+		// 現在のleft値を取得
+		const currentLeftPx = parseFloat(getComputedStyle(card).left);
+		const currentLeftVw = (currentLeftPx / window.innerWidth) * 100;
+		// 新しいleft値を設定（一つ右に移動）
+		card.style.left = currentLeftVw + (direction === "plus" ? -25 : 25) + "vw";
+	});
+
+	setTimeout(() => {
+		if (direction === "plus") {
+			const firstCard = cards[0];
+			cardBlock.removeChild(firstCard);
+			cardBlock.insertBefore(firstCard, cardBlock.lastChild);
+		} else {
+			const lastCard = cards[cards.length - 1];
+			cardBlock.removeChild(lastCard);
+			cardBlock.insertBefore(lastCard, cardBlock.firstChild);
+		}
+
+		// 位置をリセット（CSSが自動適用される）
+		cards.forEach((card) => {
+			card.style.left = "";
+		});
+
+		if (position === "top") {
+			if (topAnimationPending[0]) {
+				switch (topAnimationPending[0]) {
+					case "plus":
+						doingAnimationTop = false;
+						slideCardsPlus("top", topAnimationPending[1]);
+						break;
+					case "minus":
+						doingAnimationTop = false;
+						slideCardsMinus("top", topAnimationPending[1]);
+						break;
+					default:
+						break;
+				}
+				topAnimationPending = [null, null];
+			} else {
+				doingAnimationTop = false;
+			}
+		} else {
+			if (bottomAnimationPending[0]) {
+				switch (bottomAnimationPending[0]) {
+					case "plus":
+						doingAnimationBottom = false;
+						slideCardsPlus("bottom", bottomAnimationPending[1]);
+						break;
+					case "minus":
+						doingAnimationBottom = false;
+						slideCardsMinus("bottom", bottomAnimationPending[1]);
+						break;
+					default:
+						break;
+				}
+			} else {
+				doingAnimationBottom = false;
+			}
+		}
+	}, slideTime); // アニメーションの時間と同じにする
 }
 
 // ぼかし状態を更新する関数
@@ -337,9 +449,14 @@ function createWordElement(word, mean) {
 	return [wordElement, meanElement];
 }
 
-function initPutText(position, wordIndex) {
+function initPutText(position) {
 	const topCards = document.getElementById("topCardBlock").getElementsByTagName("div");
 	const bottomCards = document.getElementById("bottomCardBlock").getElementsByTagName("div");
+	if (position === "top") {
+		wordIndex = 1;
+	} else {
+		wordIndex = 2;
+	}
 	for (let i = 0; i < 5; i++) {
 		let currentIndex;
 		if (wordIndex + i - 2 < 1) {
@@ -364,17 +481,19 @@ function initPutText(position, wordIndex) {
 function changeCard(position, index, wordIndex) {
 	const topCards = document.getElementById("topCardBlock").getElementsByTagName("div");
 	const bottomCards = document.getElementById("bottomCardBlock").getElementsByTagName("div");
+	let elements = createWordElement(wordIndex, wordData[wordIndex].mean);
+	// let elements = createWordElement(wordData[wordIndex].word, wordData[wordIndex].mean);
 
 	if (position === "top") {
 		topCards[index].innerHTML = "";
-		topCards[index].appendChild(createWordElement(wordData[wordIndex].word, wordData[wordIndex].mean)[0]);
-		topCards[index].appendChild(createWordElement(wordData[wordIndex].word, wordData[wordIndex].mean)[1]);
+		topCards[index].appendChild(elements[0]);
+		topCards[index].appendChild(elements[1]);
 
 		currentWordIndex[0] = wordIndex;
 	} else if (position === "bottom") {
 		bottomCards[index].innerHTML = "";
-		bottomCards[index].appendChild(createWordElement(wordData[wordIndex].word, wordData[wordIndex].mean)[0]);
-		bottomCards[index].appendChild(createWordElement(wordData[wordIndex].word, wordData[wordIndex].mean)[1]);
+		bottomCards[index].appendChild(elements[0]);
+		bottomCards[index].appendChild(elements[1]);
 
 		currentWordIndex[1] = wordIndex;
 	}
@@ -383,15 +502,15 @@ function changeCard(position, index, wordIndex) {
 sinput.addEventListener("keyup", function (e) {
 	const index = parseInt(sinput.value);
 	if (index === currentWordIndex[0] || toString(index) !== toString(sinput.value)) return;
-	console.log(2)
+	console.log(2);
 	if (index) {
 		if (index > currentWordIndex[0]) {
-			slideCardsPlus("top", index);
+			slideCards("top", "plus", index);
 		} else {
-			slideCardsMinus("top", index);
+			slideCards("top", "minus", index);
 		}
-	} else {
-		slideCardsMinus("top", 1);
+	} else if (currentWordIndex[0] !== 1) {
+		slideCards("top", minus, 1);
 	}
 });
 
@@ -400,12 +519,12 @@ einput.addEventListener("keyup", function (e) {
 	if (index === currentWordIndex[1] || toString(index) !== toString(einput.value)) return;
 	if (index) {
 		if (index > currentWordIndex[1]) {
-			slideCardsPlus("bottom", index);
+			slideCards("bottom", "plus", index);
 		} else {
-			slideCardsMinus("bottom", index);
+			slideCards("bottom", "minus", index);
 		}
-	} else {
-		slideCardsMinus("bottom", currentWordIndex[0] + 1);
+	} else if (currentWordIndex[1] !== 2) {
+		slideCards("bottom", "minus", currentWordIndex[0] + 1);
 		currentWordIndex[1] = currentWordIndex[0] + 1;
 	}
 });
