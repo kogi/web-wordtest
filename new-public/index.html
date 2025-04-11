@@ -4,6 +4,8 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="new/new.css" />
+		<link rel="stylesheet" href="new/test.css" />
+		<link rel="stylesheet" href="new/result.css" />
 		<title>WordTest</title>
 	</head>
 	<body>
@@ -16,11 +18,11 @@
 			</div>
 			<div class="range">
 				<div class="input-block">
-					<input type="number" id="sinput" class="input" placeholder="No." />
+					<input type="number" id="sinput" class="input" placeholder="No." disabled />
 				</div>
 				<p>TO</p>
 				<div class="input-block">
-					<input type="number" id="einput" class="input" placeholder="No." />
+					<input type="number" id="einput" class="input" placeholder="No." disabled />
 				</div>
 			</div>
 			<div class="start-button-content">
@@ -35,7 +37,7 @@
 				<div class="card" data-blur="true"></div>
 				<div class="card" data-blur="true"></div>
 			</div>
-			<div class="middle-info-block"></div>
+			<div class="middle-info-block" id="middleBlock"></div>
 			<div class="bottom-card-block" id="bottomCardBlock">
 				<div class="card" data-blur="true"></div>
 				<div class="card" data-blur="true"></div>
@@ -48,6 +50,7 @@
 		<span id="hoge"></span>
 
 		<script src="new/new.js"></script>
-		<script src="https://unpkg.com/css-vars-ponyfill@2"></script>
+		<script src="new/test.js"></script>
+		<script src="new/result.js"></script>
 	</body>
 </html>

@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Delius+Unicase:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Delius+Unicase:wght@400;700&family=Quicksand:wght@300..700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Delius+Unicase:wght@400;700&family=Kiwi+Maru&family=Quicksand:wght@300..700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 
 :root {
 	--var-slide-time: 0.8s;
@@ -17,6 +19,7 @@ body {
 	overflow-y: hidden;
 	overflow-x: hidden;
 	user-select: none;
+	transition: 0.3s;
 }
 
 img {
@@ -140,6 +143,7 @@ body {
 	flex-direction: column;
 	background-color: #f1f1f1;
 	box-shadow: 10px 0 15px rgba(0, 0, 0, 0.154);
+	transition: 0.5s;
 }
 
 .range {
@@ -199,6 +203,7 @@ body {
 	align-items: center;
 	flex-direction: column;
 	box-shadow: inset -10px 0 15px rgba(0, 0, 0, 0.1);
+	transition: 0.5s;
 }
 
 .top-card-block,
@@ -217,22 +222,27 @@ body {
 .card {
 	position: absolute; /* absoluteに変更 */
 	width: 20vw; /* カードの幅 */
-	height: 12vw; /* カードの高さ */
+	height: 10vw; /* カードの高さ */
 	background-color: white;
 	border-radius: 8px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
 	overflow: visible;
 	z-index: -1;
-	transition: var(--var-slide-time) ease-in-out;
+	transition: left 0.5s ease-in-out, top 0.8s ease-in-out, border-color 0.5s ease-in-out;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	padding: 20px 0 20px 0;
+	max-height: calc(35vh - 40px);
+	border-width: 2px;
+	border-color: #f1f1f100;
 }
 
 .card p {
-	transition: filter 1s ease-in-out; /* ぼかしのトランジションを調整 */
+	filter: blur(0);
+	/* トランジションを明示的に定義 */
+	transition: 0.4s ease-in-out;
 }
 
 /* カードのデータ属性に基づいてぼかしを適用 */
@@ -241,7 +251,7 @@ body {
 }
 
 .card[data-blur="false"] p {
-	filter: blur(0px);
+	filter: blur(0);
 }
 
 /* 各カードの初期位置指定 */
@@ -296,10 +306,41 @@ body {
 	z-index: 2;
 }
 
+.word-info{
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	height : 1.2rem;
+	width: calc(20vw - 10px);
+	top: 5px;
+	left: 5px;
+	right: 5px;
+}
+
+.word-info p {
+	margin: 0;
+	font-size: 0.7rem;
+	color: rgb(77, 77, 77);
+}
+
+.word-info img{
+	height: 1.2rem;
+	width: 1.2rem;
+}
+
 .word {
+	font-family: "Nunito", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+
 	color: rgb(241, 79, 42);
 	max-width: 16vw;
 	transition: 0.5s;
+	width: auto;
+	height: 1.5rem;
+	font-size: 1.5rem;
 }
 
 .mean {
@@ -345,4 +386,12 @@ body {
 	100% {
 		--gradient-angle-input: 495deg;
 	}
+}
+
+#middleBlock {
+	transition: 0.5s;
+}
+
+#bottomCardBlock {
+	transition: 0.5s;
 }

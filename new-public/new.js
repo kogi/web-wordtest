@@ -11,7 +11,7 @@ let bottomAnimationPending = null;
 
 let currentWordIndex = [1, 2];
 
-let slideTime = 800;
+let slideTime = 500;
 
 document.getElementById("target1900Img").classList.add("selected");
 
@@ -36,18 +36,28 @@ document.getElementById("bookSelect").addEventListener("click", function (e) {
 			book2.classList.add("selected");
 		}
 	}
+	const topCards = Array.from(document.querySelectorAll(`.top-card-block .card`));
+	const bottomCards = Array.from(document.querySelectorAll(`.bottom-card-block .card`));
+
+	topCards[2].setAttribute("data-blur", "true");
+	bottomCards[2].setAttribute("data-blur", "true");
 
 	//reload data
 	fetchBookLength(book)
 		.then((len) => {
 			bookLength = len;
 			fetchWordData(1, bookLength)
-				.then((data) => {
+				.then(async (data) => {
 					wordData = data;
 					sinput.disabled = false;
 					einput.disabled = false;
-					initPutText("top");
-					initPutText("bottom");
+					await initPutText("top");
+					await initPutText("bottom");
+					topCards[2].setAttribute("data-blur", "false");
+					bottomCards[2].setAttribute("data-blur", "false");
+					currentWordIndex = [1, 2];
+					sinput.dispatchEvent(new Event("keyup"));
+					einput.dispatchEvent(new Event("keyup"));
 				})
 				.catch((error) => {
 					console.error(error);
@@ -61,225 +71,14 @@ document.getElementById("bookSelect").addEventListener("click", function (e) {
 const topCardBlock = document.querySelector(".top-card-block");
 const bottomCardBlock = document.querySelector(".bottom-card-block");
 
-function slideCardsMinus(position, wordIndex) {
-	let cardBlock;
-	switch (position) {
-		case "top":
-			if (doingAnimationTop) {
-				topAnimationPending = ["minus", wordIndex];
-				return;
-			} else {
-				doingAnimationTop = true;
-				topAnimationPending = [null, null];
-			}
-			cardBlock = topCardBlock;
-			break;
-		case "bottom":
-			if (doingAnimationBottom) {
-				bottomAnimationPending = ["minus", wordIndex];
-				return;
-			} else {
-				doingAnimationBottom = true;
-				bottomAnimationPending = [null, null];
-			}
-			cardBlock = bottomCardBlock;
-			break;
-		default:
-			console.error("Invalid position");
-			return;
-	}
-
-	if (wordIndex > bookLength) {
-		wordIndex = bookLength;
-	}
-	if (wordIndex < 1) {
-		wordIndex = 1;
-	}
-
-	const cards = Array.from(document.querySelectorAll(`.${position}-card-block .card`));
-
-	updateBlurStates(cards, "minus");
-
-	changeCard(position, 1, wordIndex);
-
-	// カードをアニメーションで移動（右へスライド）
-	cards.forEach((card) => {
-		// 現在のleft値を取得
-		const currentLeftPx = parseFloat(getComputedStyle(card).left);
-		const currentLeftVw = (currentLeftPx / window.innerWidth) * 100;
-		// 新しいleft値を設定（一つ右に移動）
-		card.style.left = currentLeftVw + 25 + "vw";
-	});
-
-	// アニメーション終了後に最後のカードを先頭に移動
-	setTimeout(() => {
-		// 最後のカードを取得
-		const lastCard = cards[cards.length - 1];
-		// 最後のカードを親要素から削除
-		cardBlock.removeChild(lastCard);
-		// 最後のカードを先頭に挿入
-		cardBlock.insertBefore(lastCard, cardBlock.firstChild);
-
-		// 位置をリセット（CSSが自動適用される）
-		//　カード削除後に順番が変わり、CSSのによるぼやけが0.5sでなくなり、
-		//　スライドアニメションと同時にぼやけを変化せるために先にカードを消して、
-		//　スライド完了後に位置を初期化する
-		cards.forEach((card) => {
-			card.style.left = "";
-		});
-
-		if (position === "top") {
-			if (topAnimationPending[0]) {
-				console.log(1);
-				switch (topAnimationPending[0]) {
-					case "plus":
-						doingAnimationTop = false;
-						slideCardsPlus("top", topAnimationPending[1]);
-						break;
-					case "minus":
-						doingAnimationTop = false;
-						slideCardsMinus("top", topAnimationPending[1]);
-						break;
-					default:
-						break;
-				}
-			} else {
-				doingAnimationTop = false;
-			}
-		} else {
-			if (bottomAnimationPending[0]) {
-				switch (bottomAnimationPending[0]) {
-					case "plus":
-						doingAnimationBottom = false;
-						slideCardsPlus("bottom", bottomAnimationPending[1]);
-						break;
-					case "minus":
-						doingAnimationBottom = false;
-						slideCardsMinus("bottom", bottomAnimationPending[1]);
-						break;
-					default:
-						break;
-				}
-			} else {
-				doingAnimationBottom = false;
-			}
-		}
-	}, slideTime); // (アニメーションの時間-ぼやけtransition)と同じにする
-
-	// 同様に下段のカード処理も実装
-}
-
-function slideCardsPlus(position, wordIndex) {
-	let cardBlock;
-	if (wordIndex > bookLength) {
-		wordIndex = bookLength;
-	}
-	if (wordIndex < 1) {
-		wordIndex = 1;
-	}
-	switch (position) {
-		case "top":
-			cardBlock = topCardBlock;
-			if (doingAnimationTop) {
-				topAnimationPending = ["plus", wordIndex];
-				return;
-			} else {
-				doingAnimationTop = true;
-				topAnimationPending = [null, null];
-			}
-			break;
-		case "bottom":
-			cardBlock = bottomCardBlock;
-			if (doingAnimationBottom) {
-				bottomAnimationPending = ["plus", wordIndex];
-				return;
-			} else {
-				doingAnimationBottom = true;
-				bottomAnimationPending = [null, null];
-			}
-			break;
-		default:
-			console.error("Invalid position");
-			return;
-	}
-
-	const cards = Array.from(document.querySelectorAll(`.${position}-card-block .card`));
-
-	updateBlurStates(cards, "plus");
-
-	changeCard(position, 3, wordIndex);
-
-	// カードをアニメーションで移動（左へスライド）
-	cards.forEach((card) => {
-		// 現在のleft値を取得
-		const currentLeftPx = parseFloat(getComputedStyle(card).left);
-		const currentLeftVw = (currentLeftPx / window.innerWidth) * 100;
-		// 新しいleft値を設定（一つ右に移動）
-		card.style.left = currentLeftVw - 25 + "vw";
-	});
-
-	// アニメーション終了後に先頭のカードを最後に移動
-	setTimeout(() => {
-		// 先頭のカードを取得
-		const firstCard = cards[0];
-		// 先頭のカードを親要素から削除
-		cardBlock.removeChild(firstCard);
-		// 先頭のカードを最後に挿入
-		cardBlock.insertBefore(firstCard, cardBlock.lastChild);
-
-		// 位置をリセット（CSSが自動適用される）
-		cards.forEach((card) => {
-			card.style.left = "";
-		});
-
-		if (position === "top") {
-			if (topAnimationPending[0]) {
-				switch (topAnimationPending[0]) {
-					case "plus":
-						doingAnimationTop = false;
-						slideCardsPlus("top", topAnimationPending[1]);
-						break;
-					case "minus":
-						doingAnimationTop = false;
-						slideCardsMinus("top", topAnimationPending[1]);
-						break;
-					default:
-						break;
-				}
-				topAnimationPending = [null, null];
-			} else {
-				doingAnimationTop = false;
-			}
-		} else {
-			if (bottomAnimationPending[0]) {
-				switch (bottomAnimationPending[0]) {
-					case "plus":
-						doingAnimationBottom = false;
-						slideCardsPlus("bottom", bottomAnimationPending[1]);
-						break;
-					case "minus":
-						doingAnimationBottom = false;
-						slideCardsMinus("bottom", bottomAnimationPending[1]);
-						break;
-					default:
-						break;
-				}
-			} else {
-				doingAnimationBottom = false;
-			}
-		}
-	}, slideTime); // アニメーションの時間と同じにする
-	// 同様に下段のカード処理も実装
-}
-
 //合併したほうがコードが簡潔
-function slideCards(position, direction, wordIndex) {
+async function slideCards(position, direction, wordIndex) {
 	let cardBlock;
-	if (wordIndex > bookLength) {
-		wordIndex = bookLength;
-	}
-	if (wordIndex < 1) {
-		wordIndex = 1;
+	if (direction !== "plus" && direction !== "minus") {
+		console.error("Invalid direction");
+		topAnimationPending = [null, null];
+		bottomAnimationPending = [null, null];
+		return;
 	}
 	switch (position) {
 		case "top":
@@ -304,19 +103,20 @@ function slideCards(position, direction, wordIndex) {
 			break;
 		default:
 			console.error("Invalid position");
+			topAnimationPending = [null, null];
+			bottomAnimationPending = [null, null];
 			return;
 	}
 
 	const cards = Array.from(document.querySelectorAll(`.${position}-card-block .card`));
-
-	updateBlurStates(cards, "plus");
-	changeCard(position, direction === "plus" ? 3 : 1, wordIndex);
+	await changeCard(position, direction === "plus" ? 3 : 1, wordIndex); //単語内容を変更してスライド
+	updateBlurStates(cards, direction);
 
 	// カードをアニメーションで移動（左へスライド）
 	cards.forEach((card) => {
 		// 現在のleft値を取得
 		const currentLeftPx = parseFloat(getComputedStyle(card).left);
-		const currentLeftVw = (currentLeftPx / window.innerWidth) * 100;
+		const currentLeftVw = (currentLeftPx / window.innerWidth) * 100; //pxをvwに変換
 		// 新しいleft値を設定（一つ右に移動）
 		card.style.left = currentLeftVw + (direction === "plus" ? -25 : 25) + "vw";
 	});
@@ -342,11 +142,11 @@ function slideCards(position, direction, wordIndex) {
 				switch (topAnimationPending[0]) {
 					case "plus":
 						doingAnimationTop = false;
-						slideCardsPlus("top", topAnimationPending[1]);
+						slideCards("top", "plus", topAnimationPending[1]);
 						break;
 					case "minus":
 						doingAnimationTop = false;
-						slideCardsMinus("top", topAnimationPending[1]);
+						slideCards("top", "minus", topAnimationPending[1]);
 						break;
 					default:
 						break;
@@ -360,11 +160,11 @@ function slideCards(position, direction, wordIndex) {
 				switch (bottomAnimationPending[0]) {
 					case "plus":
 						doingAnimationBottom = false;
-						slideCardsPlus("bottom", bottomAnimationPending[1]);
+						slideCards("bottom", "plus", bottomAnimationPending[1]);
 						break;
 					case "minus":
 						doingAnimationBottom = false;
-						slideCardsMinus("bottom", bottomAnimationPending[1]);
+						slideCards("bottom", "minus", bottomAnimationPending[1]);
 						break;
 					default:
 						break;
@@ -409,7 +209,7 @@ function setSlideTime(time) {
 async function fetchWordData(s, e) {
 	// データの取得
 	try {
-		const url = `https://wordtest.iceonce.com/api/v2/searchNum?book=${book}&start=${s}&end=${e}`;
+		const url = `https://wordtest.iceonce.com/api/v3/searchNum?book=${book}&start=${s}&end=${e}`;
 		const response = await fetch(url);
 		if (!response.ok) {
 			throw new Error(`status: ${response.status}`);
@@ -425,7 +225,7 @@ async function fetchWordData(s, e) {
 
 async function fetchBookLength(book) {
 	try {
-		const url = `https://wordtest.iceonce.com/api/v2/len?book=${book}`;
+		const url = `https://wordtest.iceonce.com/api/v3/len?book=${book}`;
 		const response = await fetch(url);
 		if (!response.ok) {
 			throw new Error(`status: ${response.status}`);
@@ -438,69 +238,113 @@ async function fetchBookLength(book) {
 	}
 }
 
-function createWordElement(word, mean) {
+function createWordElement(index, list) {
+	if (!list) {
+		list = wordData;
+	}
+	const word = list[index].word;
+	const mean = list[index].mean;
+	const wordInfo = document.createElement("div");
+	wordInfo.classList.add("word-info");
+	const wordNumber = document.createElement("p");
+	const iscorrect = document.createElement("img");
 	const wordElement = document.createElement("p");
 	const meanElement = document.createElement("p");
+	wordNumber.textContent = "No." + String(index);
+	iscorrect.src = "/new/img/blank.svg";
 	wordElement.textContent = word;
 	meanElement.textContent = mean;
+	if (word.length > 30) {
+		wordElement.style.fontSize = "0.7rem";
+	}
+	if (mean.length > 30) {
+		meanElement.style.fontSize = "0.7rem";
+	}
+
+	wordInfo.appendChild(wordNumber);
+	wordInfo.appendChild(iscorrect);
 	wordElement.classList.add("word");
 	meanElement.classList.add("mean");
 
-	return [wordElement, meanElement];
+	return [wordInfo, wordElement, meanElement];
 }
 
 function initPutText(position) {
-	const topCards = document.getElementById("topCardBlock").getElementsByTagName("div");
-	const bottomCards = document.getElementById("bottomCardBlock").getElementsByTagName("div");
-	if (position === "top") {
-		wordIndex = 1;
-	} else {
-		wordIndex = 2;
-	}
-	for (let i = 0; i < 5; i++) {
-		let currentIndex;
-		if (wordIndex + i - 2 < 1) {
-			currentIndex = 1;
-		} else if (wordIndex + i - 2 > bookLength) {
-			currentIndex = bookLength;
-		} else {
-			currentIndex = wordIndex + i - 2;
-		}
+	return new Promise((resolve, reject) => {
+		const topCards = document.getElementById("topCardBlock").getElementsByClassName("card");
+		const bottomCards = document.getElementById("bottomCardBlock").getElementsByClassName("card");
 		if (position === "top") {
-			topCards[i].innerHTML = "";
-			topCards[i].appendChild(createWordElement(wordData[currentIndex].word, wordData[currentIndex].mean)[0]);
-			topCards[i].appendChild(createWordElement(wordData[currentIndex].word, wordData[currentIndex].mean)[1]);
-		} else if (position === "bottom") {
-			bottomCards[i].innerHTML = "";
-			bottomCards[i].appendChild(createWordElement(wordData[currentIndex].word, wordData[currentIndex].mean)[0]);
-			bottomCards[i].appendChild(createWordElement(wordData[currentIndex].word, wordData[currentIndex].mean)[1]);
+			wordIndex = 1;
+		} else {
+			wordIndex = 2;
 		}
-	}
+		for (let i = 0; i < 5; i++) {
+			let currentIndex;
+			if (wordIndex + i - 2 < 1) {
+				currentIndex = 1;
+			} else if (wordIndex + i - 2 > bookLength) {
+				currentIndex = bookLength;
+			} else {
+				currentIndex = wordIndex + i - 2;
+			}
+			if (position === "top") {
+				topCards[i].innerHTML = "";
+				topCards[i].appendChild(createWordElement(currentIndex)[0]);
+				topCards[i].appendChild(createWordElement(currentIndex)[1]);
+				topCards[i].appendChild(createWordElement(currentIndex)[2]);
+			} else if (position === "bottom") {
+				bottomCards[i].innerHTML = "";
+				bottomCards[i].appendChild(createWordElement(currentIndex)[0]);
+				bottomCards[i].appendChild(createWordElement(currentIndex)[1]);
+				bottomCards[i].appendChild(createWordElement(currentIndex)[2]);
+			}
+		}
+		requestAnimationFrame(() => {
+			resolve(true);
+		});
+	});
 }
 
 function changeCard(position, index, wordIndex) {
-	const topCards = document.getElementById("topCardBlock").getElementsByTagName("div");
-	const bottomCards = document.getElementById("bottomCardBlock").getElementsByTagName("div");
-	let elements = createWordElement(wordIndex, wordData[wordIndex].mean);
-	// let elements = createWordElement(wordData[wordIndex].word, wordData[wordIndex].mean);
+	return new Promise((resolve, reject) => {
+		const topCards = document.getElementById("topCardBlock").getElementsByClassName("card");
+		const bottomCards = document.getElementById("bottomCardBlock").getElementsByClassName("card");
+		// let elements = createWordElement(wordIndex, wordData[wordIndex].mean);
+		let elements = createWordElement(wordIndex);
 
-	if (position === "top") {
-		topCards[index].innerHTML = "";
-		topCards[index].appendChild(elements[0]);
-		topCards[index].appendChild(elements[1]);
+		if (position === "top") {
+			topCards[index].innerHTML = "";
+			topCards[index].appendChild(elements[0]);
+			topCards[index].appendChild(elements[1]);
+			topCards[index].appendChild(elements[2]);
 
-		currentWordIndex[0] = wordIndex;
-	} else if (position === "bottom") {
-		bottomCards[index].innerHTML = "";
-		bottomCards[index].appendChild(elements[0]);
-		bottomCards[index].appendChild(elements[1]);
+			currentWordIndex[0] = wordIndex;
+		} else if (position === "bottom") {
+			bottomCards[index].innerHTML = "";
+			bottomCards[index].appendChild(elements[0]);
+			bottomCards[index].appendChild(elements[1]);
+			bottomCards[index].appendChild(elements[2]);
 
-		currentWordIndex[1] = wordIndex;
-	}
+			currentWordIndex[1] = wordIndex;
+		}
+		// DOM更新が反映されるのを待つための小さな遅延
+		// requestAnimationFrameを2回使用することで、レンダリングサイクルを確実に待つ
+		requestAnimationFrame(() => {
+			resolve(true); // DOM更新が反映された後に解決
+		});
+	});
 }
 
 sinput.addEventListener("keyup", function (e) {
-	const index = parseInt(sinput.value);
+	let index = parseInt(sinput.value);
+	if (index > bookLength) {
+		sinput.value = bookLength;
+		index = bookLength;
+	}
+	if (index < 1) {
+		// sinput.value = 1;
+		index = 1;
+	}
 	if (index === currentWordIndex[0] || toString(index) !== toString(sinput.value)) return;
 	console.log(2);
 	if (index) {
@@ -510,12 +354,20 @@ sinput.addEventListener("keyup", function (e) {
 			slideCards("top", "minus", index);
 		}
 	} else if (currentWordIndex[0] !== 1) {
-		slideCards("top", minus, 1);
+		slideCards("top", "minus", 1);
 	}
 });
 
 einput.addEventListener("keyup", function (e) {
-	const index = parseInt(einput.value);
+	let index = parseInt(einput.value);
+	if (index > bookLength) {
+		einput.value = bookLength;
+		index = bookLength;
+	}
+	if (index < 1) {
+		// sinput.value = 1;
+		index = 1;
+	}
 	if (index === currentWordIndex[1] || toString(index) !== toString(einput.value)) return;
 	if (index) {
 		if (index > currentWordIndex[1]) {
@@ -534,5 +386,6 @@ window.addEventListener("load", async function () {
 	wordData = await fetchWordData(1, bookLength);
 	initPutText("top", 1);
 	initPutText("bottom", 2);
-	console.log(bookLength);
+	sinput.disabled = false;
+	einput.disabled = false;
 });
