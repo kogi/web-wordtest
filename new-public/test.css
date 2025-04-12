@@ -1,0 +1,104 @@
+.score-block {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 15%;
+	background-color: #f1f1f1;
+	transition: 0.5s;
+}
+
+.score-block > p {
+	font-size: 1.5rem;
+	background: linear-gradient(90deg, #58c6ff 0%, #076ad9 40%, #ff3bef 80%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	width: auto;
+}
+
+#scoreText.change-score {
+	animation: change-score 0.5s ease;
+}
+
+.test-card-block {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: 100%;
+	height: 50%;
+	transition: 0.5s;
+	z-index: 3;
+}
+
+.progress-text-block {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 90%;
+}
+
+.progress-block {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 35%;
+	background-color: #f1f1f1;
+	transition: 0.5s;
+}
+
+.progress-bar {
+	width: 90%;
+	height: 1rem;
+	outline: none;
+	border: none;
+	background-color: #dadada;
+	border-radius: 5px;
+}
+
+.progress-bar > div {
+	height: 100%;
+	background-image: linear-gradient(to left, orange, rgb(154, 196, 30));
+	transition: 0.5s;
+	width: 0%;
+	border-radius: 5px;
+}
+
+.test-block {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	background-color: #f1f1f1;
+	transition: 0.5s;
+}
+
+.advise {
+	line-height: 1rem;
+	word-wrap: break-word;
+	width: 90%;
+	height: 100%;
+}
+
+.correct {
+	border: rgb(134, 245, 49) 2px solid !important;
+}
+
+.incorrect {
+	border: rgb(245, 49, 49) 2px solid !important;
+}
+
+@keyframes change-score {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.5);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
