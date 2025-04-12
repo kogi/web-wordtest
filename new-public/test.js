@@ -166,13 +166,13 @@ function test() {
 			//単語の正誤判定
 			if (testBlock.children[index].getElementsByClassName("word")[0].innerHTML.toLowerCase() === testWords[currentIndex].word.toLowerCase()) {
 				testBlock.children[index].classList.add("correct");
-				testBlock.children[index].getElementsByTagName("img")[0].src = "/new/img/correct.svg";
+				testBlock.children[index].getElementsByTagName("img")[0].src = "/img/correct.svg";
 				score++;
 			} else {
 				testBlock.children[index].classList.add("incorrect");
 				incorrectWords.push(testWords[currentIndex].index);
 				testBlock.children[index].getElementsByClassName("word")[0].innerHTML = "<s>" + testBlock.children[index].getElementsByClassName("word")[0].innerHTML + "</s>";
-				testBlock.children[index].getElementsByTagName("img")[0].src = "/new/img/incorrect.svg";
+				testBlock.children[index].getElementsByTagName("img")[0].src = "/img/incorrect.svg";
 				localStorage.setItem(
 					storageIndex + 1,
 					(localStorage.getItem(storageIndex + 1) ? localStorage.getItem(storageIndex + 1) + "," : "") +

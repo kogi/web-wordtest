@@ -76,7 +76,7 @@ function memoryCard() {
 
 function createMemoryCard(wordIndex, index) {
 	const card = createCard(wordIndex, 40, wordData);
-	card.getElementsByTagName("img")[0].src = "/new/img/incorrect.svg";
+	card.getElementsByTagName("img")[0].src = "/img/incorrect.svg";
 	card.className = "memory-card";
 	card.classList.add("incorrect");
 	card.getElementsByClassName("word-info")[0].children[0].innerHTML = "No." + wordIndex;

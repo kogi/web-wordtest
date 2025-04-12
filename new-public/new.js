@@ -251,7 +251,7 @@ function createWordElement(index, list) {
 	const wordElement = document.createElement("p");
 	const meanElement = document.createElement("p");
 	wordNumber.textContent = "No." + String(index);
-	iscorrect.src = "/new/img/blank.svg";
+	iscorrect.src = "/img/blank.svg";
 	wordElement.textContent = word;
 	meanElement.textContent = mean;
 	if (word.length > 30) {

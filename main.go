@@ -26,34 +26,7 @@ func main() {
 
 	gin.SetMode(gin.ReleaseMode)
 
-	route.Static("/img", "./public/img")
-
-	route.Static("/new", "./new-public")
-
-	route.GET("/", func(c *gin.Context) {
-		c.File("public/target.html")
-	})
-
-	route.GET("/new", func(c *gin.Context) {
-		c.File("new-public/index.html")
-	})
-
-	route.GET("/retry", func(c *gin.Context) {
-		c.File("./retry/retry.html")
-		println()
-	})
-
-	route.GET("/retry/:path", func(c *gin.Context) {
-		c.File("./retry/" + c.Param("path"))
-	})
-
-	route.GET("/retry/img/:path", func(c *gin.Context) {
-		c.File("./retry/img/" + c.Param("path"))
-	})
-
-	route.GET("/:path", func(c *gin.Context) {
-		c.File("./public/" + c.Param("path"))
-	})
+	route.Static("/", "./new-public")
 
 	route.POST("/api/v1/analyze", func(c *gin.Context) {
 		println(time.Now().UnixMilli() - lastRequestTime)
