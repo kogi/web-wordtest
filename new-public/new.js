@@ -250,12 +250,16 @@ function createWordElement(index, list) {
 	const iscorrect = document.createElement("img");
 	const wordElement = document.createElement("p");
 	const meanElement = document.createElement("p");
+	const correct = document.createElement("p")
 	wordNumber.textContent = "No." + String(index);
 	iscorrect.src = "/img/blank.svg";
 	wordElement.textContent = word;
+	correct.textContent = word;
+	correct.className = "correct-word";
 	meanElement.textContent = mean;
 	if (word.length > 30) {
 		wordElement.style.fontSize = "0.7rem";
+		correct.style.fontSize = "0.7rem";
 	}
 	if (mean.length > 30) {
 		meanElement.style.fontSize = "0.7rem";
@@ -266,7 +270,7 @@ function createWordElement(index, list) {
 	wordElement.classList.add("word");
 	meanElement.classList.add("mean");
 
-	return [wordInfo, wordElement, meanElement];
+	return [wordInfo, wordElement, meanElement, correct];
 }
 
 function initPutText(position) {

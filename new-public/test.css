@@ -91,6 +91,17 @@
 	border: rgb(245, 49, 49) 2px solid !important;
 }
 
+.test-word{
+	margin-top: 0.7em !important;
+	margin-bottom: 0.5em !important;
+}
+
+.correct-word{
+	color: rgba(173, 255, 100, 0);
+	transition: 0.3s;
+	margin: 0;
+}
+
 @keyframes change-score {
 	0% {
 		transform: scale(1);

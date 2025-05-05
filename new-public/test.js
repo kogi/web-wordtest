@@ -25,8 +25,10 @@ function createCard(wordIndex, left, list) {
 	p[0].getElementsByTagName("p")[0].innerHTML = "No." + String(list[wordIndex].index);
 	p[2].style.filter = "blur(5px)";
 	p[1].innerHTML = "　";
+	p[1].classList.add("test-word");
 	card.appendChild(p[0]);
 	card.appendChild(p[1]);
+	card.appendChild(p[3]);
 	card.appendChild(p[2]);
 	return card;
 }
@@ -105,6 +107,7 @@ function startTest() {
 start.addEventListener("click", startTest);
 
 function nextQuestion() {
+	// カードの幅は20vw、間は5vw
 	sliding = true;
 	const onevw = window.innerWidth / 100;
 	console.log(currentIndex, testWords.length);
@@ -133,9 +136,9 @@ function nextQuestion() {
 	}, slideTime);
 }
 
-function progress(persent) {
+function progress(percent) {
 	const progressInner = document.getElementById("progressInner");
-	progressInner.style.width = persent + "%";
+	progressInner.style.width = percent + "%";
 	document.getElementById("progressText").innerHTML = currentIndex;
 	document.getElementById("scoreText").innerHTML = score;
 	document.getElementById("scoreText").classList.toggle("change-score");
@@ -159,7 +162,7 @@ function test() {
 			if (sliding) {
 				return;
 			}
-			if (testBlock.children.length == 0) {
+			if (testBlock.children.length === 0) {
 				return;
 			}
 
@@ -172,6 +175,10 @@ function test() {
 				testBlock.children[index].classList.add("incorrect");
 				incorrectWords.push(testWords[currentIndex].index);
 				testBlock.children[index].getElementsByClassName("word")[0].innerHTML = "<s>" + testBlock.children[index].getElementsByClassName("word")[0].innerHTML + "</s>";
+				//　下に正解を表示する, 誤回答のフォントサイズを小さくする
+				testBlock.children[index].getElementsByClassName("correct-word")[0].style.color = "green";
+				testBlock.children[index].getElementsByClassName("word")[0].style = "font-size: 1rem;"
+
 				testBlock.children[index].getElementsByTagName("img")[0].src = "/img/incorrect.svg";
 				localStorage.setItem(
 					storageIndex + 1,
@@ -193,6 +200,15 @@ function test() {
 			if (testBlock.children[index].getElementsByClassName("word")[0].innerHTML === "　") {
 				testBlock.children[index].getElementsByClassName("word")[0].innerHTML = e.key;
 			} else {
+				//　文字数制限 20文字
+				if (testBlock.children[index].getElementsByClassName("word")[0].innerHTML.length > 20) {
+					return;
+					// 10文字と15文字のときフォントサイズを小さくする、見た目を良くするため
+				}else if(testBlock.children[index].getElementsByClassName("word")[0].innerHTML.length > 15){
+					testBlock.children[index].getElementsByClassName("word")[0].style = "font-size: 1rem;";
+				}else if(testBlock.children[index].getElementsByClassName("word")[0].innerHTML.length > 10){
+					testBlock.children[index].getElementsByClassName("word")[0].style = "font-size: 1.3rem;";
+				}
 				testBlock.children[index].getElementsByClassName("word")[0].innerHTML += e.key;
 			}
 		}
@@ -208,6 +224,10 @@ function test() {
 		if (e.key === "Backspace") {
 			if (testBlock.children[index].getElementsByClassName("word")[0].innerHTML.length > 1) {
 				testBlock.children[index].getElementsByClassName("word")[0].innerHTML = testBlock.children[index].getElementsByClassName("word")[0].innerHTML.slice(0, -1);
+				if(testBlock.children[index].getElementsByClassName("word")[0].innerHTML.length <= 15){
+					// 15文字以下なったら元に戻す
+					testBlock.children[index].getElementsByClassName("word")[0].style = "font-size: 1.5rem;";
+				}
 			} else {
 				testBlock.children[index].getElementsByClassName("word")[0].innerHTML = "　";
 			}
