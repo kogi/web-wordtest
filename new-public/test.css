@@ -61,7 +61,7 @@
 	height: 100%;
 	background-image: linear-gradient(to left, orange, rgb(154, 196, 30));
 	transition: 0.5s;
-	width: 0%;
+	width: 0;
 	border-radius: 5px;
 }
 
@@ -97,9 +97,15 @@
 }
 
 .correct-word{
+	font-family: "Nunito", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+
 	color: rgba(173, 255, 100, 0);
 	transition: 0.3s;
 	margin: 0;
+	font-size: 1.5rem;
 }
 
 @keyframes change-score {
